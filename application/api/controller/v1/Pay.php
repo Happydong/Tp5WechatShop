@@ -6,7 +6,6 @@ use app\api\controller\BaseController;
 use app\api\service\Pay as PayService;
 use app\api\service\WxNotify;
 use app\api\validate\IDMustBePositiveInt;
-use think\Controller;
 
 class Pay extends BaseController
 {
@@ -29,22 +28,26 @@ class Pay extends BaseController
 
     public function notifyConcurrency()
     {
-        //检测库存量，超卖，更新status
         $notify = new WxNotify();
         $notify->handle();
     }
-//    做一次转发，然后就可以进行断点调试了
+
+    /**
+     * 支付回调
+     */
     public function receiveNotify()
     {
 
 
 //        获取微信返回的xml数据
-       # $xmlData = file_get_contents('php://input');
-       # Log::error($xmlData);
-      	#error_log($xmlData,'fuck.log');
-	#error_log($_REQUEST,'test.log');
+//         $xmlData = file_get_contents('php://input');
+//         Log::error($xmlData);
+//      	 error_log($xmlData,'fuck.log');
+//	     error_log($_REQUEST,'test.log');
+        //检测库存量，超卖，更新status
         $notify = new WxNotify();
         $notify->handle();
+    //    做一次转发，然后就可以进行断点调试了
 //        $xmlData = file_get_contents('php://input');
 //        $result = curl_post_raw('http:/zerg.cn/api/v1/pay/re_notify?XDEBUG_SESSION_START=13133',
 //            $xmlData);

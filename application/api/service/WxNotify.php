@@ -14,9 +14,6 @@ use think\Log;
 
 Loader::import('WxPay.WxPay', EXTEND_PATH, '.Api.php');
 
-//Loader::import('WxPay.WxPay', EXTEND_PATH, '.Data.php');
-
-
 class WxNotify extends \WxPayNotify
 {
 //    protected $data = <<<EOD

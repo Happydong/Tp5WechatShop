@@ -53,13 +53,13 @@ Route::group('api/:version/theme',function(){
 //Product
 Route::post('api/:version/product', 'api/:version.Product/createOne');
 Route::delete('api/:version/product/:id', 'api/:version.Product/deleteOne');
-Route::get('api/:version/product/by_category/paginate', 'api/:version.Product/getByCategory');
+Route::get('api/:version/product/by_category/paginate/:id', 'api/:version.Product/getByCategory');
 Route::get('api/:version/product/by_category', 'api/:version.Product/getAllInCategory');
 Route::get('api/:version/product/:id', 'api/:version.Product/getOne',[],['id'=>'\d+']);
-Route::get('api/:version/product/recent', 'api/:version.Product/getRecent');
+Route::get('api/:version/product/recent/:count', 'api/:version.Product/getRecent');
 
 //Category
-Route::get('api/:version/category', 'api/:version.Category/getCategories');
+Route::get('api/:version/category', 'api/:version.Category/getCategory');
 // 正则匹配区别id和all，注意d后面的+号，没有+号将只能匹配个位数
 //Route::get('api/:version/category/:id', 'api/:version.Category/getCategory',[], ['id'=>'\d+']);
 //Route::get('api/:version/category/:id/products', 'api/:version.Category/getCategory',[], ['id'=>'\d+']);
@@ -86,10 +86,13 @@ Route::put('api/:version/order/delivery', 'api/:version.Order/delivery');
 Route::get('api/:version/order/by_user', 'api/:version.Order/getSummaryByUser');
 Route::get('api/:version/order/paginate', 'api/:version.Order/getSummary');
 
-//Pay 需要权限
+//微信发起预订单请求 需要权限
 Route::post('api/:version/pay/pre_order', 'api/:version.Pay/getPreOrder');
+// 微信发起退款请求，需要权限
+Route::post('api/:version/refund/pre_order','api/:version.Refund/getPreRefund');
 // 微信回调通知 不要加参数，微信会自动过滤？后面的参数
 Route::post('api/:version/pay/notify', 'api/:version.Pay/receiveNotify');
+// debug 路由转发
 Route::post('api/:version/pay/re_notify', 'api/:version.Pay/redirectNotify');
 Route::post('api/:version/pay/concurrency', 'api/:version.Pay/notifyConcurrency');
 

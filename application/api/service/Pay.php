@@ -19,8 +19,12 @@ class Pay
 {
     private $orderNo;
     private $orderID;
-//    private $orderModel;
 
+    /**
+     * 获取orderID;
+     * @param $orderID
+     * @throws Exception
+     */
     function __construct($orderID)
     {
         if (!$orderID)
@@ -30,6 +34,13 @@ class Pay
         $this->orderID = $orderID;
     }
 
+    /**
+     * 支付申请
+     * @return array
+     * @throws Exception
+     * @throws OrderException
+     * @throws TokenException
+     */
     public function pay()
     {
         $this->checkOrderValid();
@@ -40,7 +51,6 @@ class Pay
             return $status;
         }
         return $this->makeWxPreOrder($status['orderPrice']);
-        //        $this->checkProductStock();
     }
 
     // 构建微信支付订单信息
@@ -64,7 +74,13 @@ class Pay
         return $this->getPaySignature($wxOrderData);
     }
 
-    //向微信请求订单号并生成签名
+    /**
+     * 向微信请求订单号并生成签名
+     * @param $wxOrderData
+     * @return array
+     * @throws Exception
+     * @throws \WxPayException
+     */
     private function getPaySignature($wxOrderData)
     {
         $wxOrder = \WxPayApi::unifiedOrder($wxOrderData);
@@ -81,13 +97,21 @@ class Pay
         return $signature;
     }
 
+    /**
+     * 更新数据库中的prepay_id
+     * @param $wxOrder
+     */
     private function recordPreOrder($wxOrder){
         // 必须是update，每次用户取消支付后再次对同一订单支付，prepay_id是不同的
         OrderModel::where('id', '=', $this->orderID)
             ->update(['prepay_id' => $wxOrder['prepay_id']]);
     }
 
-    // 签名
+    /**
+     * 签名
+     * @param $wxOrder
+     * @return array
+     */
     private function sign($wxOrder)
     {
         $jsApiPayData = new \WxPayJsApiPay();
@@ -105,7 +129,8 @@ class Pay
         return $rawValues;
     }
 
-    /**安全性原则，客户端数据全部不可信，尤其涉及到钱这一字眼
+    /**
+     * 安全性原则，客户端数据全部不可信，尤其涉及到钱这一字眼
      * 订单号可能不存在，和用户不匹配，已经支付过
      * @return bool
      * @throws OrderException
